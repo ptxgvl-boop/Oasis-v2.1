@@ -1,0 +1,1008 @@
+-- ============================================
+-- OasisX UI System + Target Action
+-- ============================================
+
+Players = game:GetService('Players')
+TweenService = game:GetService('TweenService')
+plr = Players.LocalPlayer
+gui = plr:WaitForChild('PlayerGui'):WaitForChild('MenuGui')
+TopRight = gui:WaitForChild('TopRight')
+CoinsFrame = TopRight:WaitForChild('CoinsFrame')
+CoinsDisplay = CoinsFrame:WaitForChild('CoinsDisplay')
+CoinImage = CoinsDisplay:WaitForChild('CoinImage')
+Coins = CoinsDisplay:WaitForChild('Coins')
+CoinsButton = CoinsFrame:WaitForChild('CoinsButton')
+
+-- ============================================
+-- ล้าง UI เก่าออก
+-- ============================================
+for _, v in ipairs(CoinsFrame:GetChildren()) do
+    if v:IsA('UICorner') or v:IsA('UIStroke') or v:IsA('UIPadding') or v:IsA('UIGradient') then
+        v:Destroy()
+    end
+end
+for _, v in ipairs(CoinsDisplay:GetChildren()) do
+    if v:IsA('UIListLayout') then
+        v:Destroy()
+    end
+end
+
+-- ============================================
+-- Glass Blur Effect
+-- ============================================
+blur = Instance.new('ImageLabel')
+blur.Name = 'GlassBlur'
+blur.BackgroundTransparency = 1
+blur.Size = UDim2.new(1, 0, 1, 0)
+blur.Position = UDim2.new(0, 0, 0, 0)
+blur.Image = 'rbxassetid://8992230677'
+blur.ImageTransparency = 0.88
+blur.ScaleType = Enum.ScaleType.Stretch
+blur.ZIndex = CoinsFrame.ZIndex - 1
+blur.Parent = CoinsFrame
+
+-- ============================================
+-- ตั้งค่า CoinsFrame
+-- ============================================
+CoinsFrame.BackgroundColor3 = Color3.fromRGB(12, 14, 18)
+CoinsFrame.BackgroundTransparency = 0.35
+CoinsFrame.AutomaticSize = Enum.AutomaticSize.X
+CoinsFrame.Size = UDim2.new(0, 0, 0, 74)
+
+corner = Instance.new('UICorner')
+corner.CornerRadius = UDim.new(1, 0)
+corner.Parent = CoinsFrame
+
+padding = Instance.new('UIPadding')
+padding.PaddingLeft = UDim.new(0, 10)
+padding.PaddingRight = UDim.new(0, 10)
+padding.Parent = CoinsFrame
+
+stroke = Instance.new('UIStroke')
+stroke.Thickness = 1
+stroke.Transparency = 0.6
+stroke.Color = Color3.fromRGB(255, 255, 255)
+stroke.Parent = CoinsFrame
+
+borderGrad = Instance.new('UIGradient')
+borderGrad.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(200, 200, 220)),
+    ColorSequenceKeypoint.new(0.3, Color3.fromRGB(240, 240, 255)),
+    ColorSequenceKeypoint.new(0.6, Color3.fromRGB(220, 220, 240)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(200, 200, 220)),
+})
+borderGrad.Parent = stroke
+
+task.spawn(function()
+    while CoinsFrame.Parent do
+        for i = 0, 360, 1 do
+            borderGrad.Rotation = i
+            task.wait(0.02)
+        end
+    end
+end)
+
+TweenService:Create(CoinsFrame,
+    TweenInfo.new(2.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
+    { BackgroundTransparency = 0.25 }
+):Play()
+
+-- ============================================
+-- CoinsDisplay Layout
+-- ============================================
+CoinsDisplay.BackgroundTransparency = 1
+CoinsDisplay.AutomaticSize = Enum.AutomaticSize.X
+CoinsDisplay.Size = UDim2.new(0, 0, 1, 0)
+
+local layout = Instance.new('UIListLayout')
+layout.FillDirection = Enum.FillDirection.Horizontal
+layout.VerticalAlignment = Enum.VerticalAlignment.Center
+layout.HorizontalAlignment = Enum.HorizontalAlignment.Left
+layout.Padding = UDim.new(0, 6)
+layout.SortOrder = Enum.SortOrder.LayoutOrder
+layout.Parent = CoinsDisplay
+
+-- ============================================
+-- Coins Text
+-- ============================================
+Coins.LayoutOrder = 1
+Coins.BackgroundTransparency = 1
+Coins.AutomaticSize = Enum.AutomaticSize.X
+Coins.TextXAlignment = Enum.TextXAlignment.Left
+Coins.TextYAlignment = Enum.TextYAlignment.Center
+Coins.Font = Enum.Font.GothamBold
+Coins.TextSize = 34
+Coins.Text = tostring(Coins.Text)
+
+local textGrad = Instance.new('UIGradient')
+textGrad.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(200, 200, 230)),
+    ColorSequenceKeypoint.new(0.3, Color3.fromRGB(255, 255, 255)),
+    ColorSequenceKeypoint.new(0.6, Color3.fromRGB(230, 230, 250)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(200, 200, 230)),
+})
+textGrad.Parent = Coins
+
+task.spawn(function()
+    while Coins.Parent do
+        for i = 0, 360, 2 do
+            textGrad.Rotation = i
+            task.wait(0.03)
+        end
+    end
+end)
+
+-- ============================================
+-- Coin Image
+-- ============================================
+CoinImage.LayoutOrder = 2
+CoinImage.BackgroundTransparency = 1
+CoinImage.Size = UDim2.new(0, 64, 0, 64)
+CoinImage.ImageColor3 = Color3.fromRGB(220, 220, 240)
+CoinImage.AnchorPoint = Vector2.new(0, 0.5)
+CoinImage.Position = UDim2.new(0, 0, 0.5, 0)
+
+task.defer(function()
+    CoinImage.Image = "rbxassetid://92219509537334"
+end)
+
+TweenService:Create(CoinImage,
+    TweenInfo.new(2.2, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
+    { Position = CoinImage.Position + UDim2.new(0, 0, 0, -4) }
+):Play()
+
+-- ============================================
+-- CoinsButton
+-- ============================================
+CoinsButton.BackgroundTransparency = 1
+CoinsButton.Text = ''
+CoinsButton.Size = UDim2.new(1, 0, 1, 0)
+CoinsButton.ZIndex = CoinsFrame.ZIndex + 5
+
+function tween(obj, ti, props)
+    TweenService:Create(obj, ti, props):Play()
+end
+
+CoinsButton.MouseEnter:Connect(function()
+    tween(stroke, TweenInfo.new(0.2), { Transparency = 0.15 })
+    tween(CoinImage, TweenInfo.new(0.2), { ImageColor3 = Color3.fromRGB(255, 255, 255) })
+end)
+
+CoinsButton.MouseLeave:Connect(function()
+    tween(stroke, TweenInfo.new(0.2), { Transparency = 0.6 })
+    tween(CoinImage, TweenInfo.new(0.2), { ImageColor3 = Color3.fromRGB(220, 220, 240) })
+end)
+
+CoinsButton.MouseButton1Down:Connect(function()
+    tween(CoinsFrame, TweenInfo.new(0.08), { Size = UDim2.new(0, 0, 0, 71) })
+end)
+
+CoinsButton.MouseButton1Up:Connect(function()
+    tween(CoinsFrame, TweenInfo.new(0.2, Enum.EasingStyle.Back), { Size = UDim2.new(0, 0, 0, 74) })
+end)
+
+-- ============================================
+-- StyleMenuUI()
+-- ============================================
+function StyleMenuUI()
+    player = game:GetService("Players").LocalPlayer
+    playerGui = player:WaitForChild("PlayerGui")
+    menuGui = playerGui:WaitForChild("MenuGui")
+    menu = menuGui:WaitForChild("Menu")
+
+    black = Color3.fromRGB(8, 10, 16)
+    dark = Color3.fromRGB(18, 16, 14)
+    gold = Color3.fromRGB(255, 215, 0)
+    goldLight = Color3.fromRGB(255, 235, 150)
+    goldDark = Color3.fromRGB(200, 160, 0)
+    white = Color3.fromRGB(255, 255, 255)
+    cream = Color3.fromRGB(255, 245, 230)
+    cornerRadius = UDim.new(0, 12)
+
+    function roundCorners(obj)
+        local corner = obj:FindFirstChildOfClass("UICorner")
+        if corner then
+            corner.CornerRadius = cornerRadius
+        else
+            corner = Instance.new("UICorner")
+            corner.CornerRadius = cornerRadius
+            corner.Parent = obj
+        end
+    end
+
+    function addGoldGradient(obj, rotation)
+        local gradient = obj:FindFirstChildOfClass("UIGradient")
+        if not gradient then
+            gradient = Instance.new("UIGradient")
+        end
+        gradient.Color = ColorSequence.new{
+            ColorSequenceKeypoint.new(0, goldDark),
+            ColorSequenceKeypoint.new(0.2, goldLight),
+            ColorSequenceKeypoint.new(0.5, gold),
+            ColorSequenceKeypoint.new(0.8, goldLight),
+            ColorSequenceKeypoint.new(1, goldDark)
+        }
+        gradient.Rotation = rotation or 45
+        gradient.Parent = obj
+    end
+
+    function addGoldStroke(obj, thickness, transparency)
+        local stroke = obj:FindFirstChildOfClass("UIStroke")
+        if not stroke then
+            stroke = Instance.new("UIStroke")
+        end
+        stroke.Color = gold
+        stroke.Thickness = thickness or 1.5
+        stroke.Transparency = transparency or 0.5
+        stroke.Parent = obj
+        return stroke
+    end
+
+    tabBarSizeY = 0.9999
+
+    tabBar = menu:WaitForChild("TabBar")
+    tabBar.BackgroundColor3 = black
+    tabBar.BackgroundTransparency = 0.2
+    tabBar.Size = UDim2.new(tabBar.Size.X.Scale, tabBar.Size.X.Offset, tabBarSizeY, tabBar.Size.Y.Offset)
+    roundCorners(tabBar)
+    addGoldStroke(tabBar, 1, 0.6)
+
+    tabContents = menu:WaitForChild("TabContents")
+    for _, frame in ipairs(tabContents:GetChildren()) do
+        if frame:IsA("Frame") then
+            frame.BackgroundColor3 = black
+            frame.BackgroundTransparency = 0.65
+            roundCorners(frame)
+            addGoldStroke(frame, 1, 0.4)
+
+            title = frame:FindFirstChild("Title")
+            if title then
+                title.BackgroundColor3 = dark
+                title.BackgroundTransparency = 0.3
+                roundCorners(title)
+                addGoldStroke(title, 1, 0.3)
+
+                local currentSize = title.Size
+                title.Size = UDim2.new(currentSize.X.Scale * 0.975, currentSize.X.Offset, currentSize.Y.Scale, currentSize.Y.Offset)
+
+                local titleGrad = title:FindFirstChildOfClass("UIGradient")
+                if not titleGrad then
+                    titleGrad = Instance.new("UIGradient")
+                end
+                titleGrad.Color = ColorSequence.new{
+                    ColorSequenceKeypoint.new(0, goldDark),
+                    ColorSequenceKeypoint.new(0.5, goldLight),
+                    ColorSequenceKeypoint.new(1, goldDark)
+                }
+                titleGrad.Rotation = 90
+                titleGrad.Parent = title
+            end
+
+            sortingTabs = frame:FindFirstChild("SortingTabs")
+            if sortingTabs then
+                sortingTabs.BackgroundColor3 = dark
+                sortingTabs.BackgroundTransparency = 0.4
+                roundCorners(sortingTabs)
+                addGoldStroke(sortingTabs, 1, 0.3)
+            end
+
+            contents = frame:FindFirstChild("Contents")
+            if contents then
+                contents.BackgroundColor3 = Color3.fromRGB(25, 22, 18)
+                contents.BackgroundTransparency = 0.5
+                roundCorners(contents)
+                addGoldGradient(contents, 45)
+                addGoldStroke(contents, 1.5, 0.3)
+
+                contents.ChildAdded:Connect(function()
+                    contents.BackgroundTransparency = 0
+                    TweenService:Create(contents,
+                        TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        { BackgroundTransparency = 0.5 }
+                    ):Play()
+                end)
+            end
+
+            favoritesFrame = frame:FindFirstChild("FavoritesFrame")
+            if favoritesFrame then
+                favoritesFrame.BackgroundColor3 = black
+                favoritesFrame.BackgroundTransparency = 0.8
+                roundCorners(favoritesFrame)
+                addGoldStroke(favoritesFrame, 1, 0.3)
+            end
+
+            if contents then
+                for _, item in ipairs(contents:GetChildren()) do
+                    local fav = item:FindFirstChild("Favorite")
+                    if fav and (fav:IsA("ImageLabel") or fav:IsA("ImageButton")) then
+                        fav.ImageTransparency = 1
+                        fav.BackgroundTransparency = 1
+                    end
+                end
+            end
+        end
+    end
+
+    for _, desc in ipairs(menuGui:GetDescendants()) do
+        if desc.Name == "MeterFrame" and desc:IsA("GuiObject") then
+            desc.BackgroundColor3 = dark
+            desc.BackgroundTransparency = 0.3
+            roundCorners(desc)
+            addGoldStroke(desc, 1, 0.4)
+        end
+    end
+end
+
+StyleMenuUI()
+
+-- ============================================
+-- Services
+-- ============================================
+RunService         = game:GetService('RunService')
+Players            = game:GetService('Players')
+ReplicatedStorage  = game:GetService('ReplicatedStorage')
+Workspace          = game:GetService('Workspace')
+UserInputService   = game:GetService('UserInputService')
+TweenService       = game:GetService('TweenService')
+HttpService        = game:GetService('HttpService')
+TeleportService    = game:GetService('TeleportService')
+MarketplaceService = game:GetService('MarketplaceService')
+SoundService       = game:GetService('SoundService')
+Stats              = game:GetService('Stats')
+LocalPlayer        = Players.LocalPlayer
+
+-- ============================================
+-- โหลด Library
+-- ============================================
+Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/PaeIsEpic/tuff67mangomustard/refs/heads/main/tuffo"))()
+ThemeManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/PaeIsEpic/tuff67mangomustard/refs/heads/main/tuffus"))()
+SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/PaeIsEpic/tuff67mangomustard/refs/heads/main/tuffih"))()
+Options = Library.Options
+Toggles = Library.Toggles
+Library.ForceCheckbox = false
+
+-- ============================================
+-- สร้างหน้าต่าง UI หลัก
+-- ============================================
+Window = Library:CreateWindow({
+    Title = "<b>OasisX</b>",
+    Icon = "rbxassetid://92219509537334",
+    Footer = "<b>OasisX</b> / PTX-owner",
+    NotifySide = "Right",
+    CornerRadius = 20,
+    ShowCustomCursor = false,
+    EnableCompacting = true,
+    SidebarCompacted = true,
+    BackgroundImage = "rbxassetid://",
+    Animations = {
+        TabSwitch = true,
+        Groupbox = true,
+        Dropdown = true,
+        KeyPicker = true
+    },
+    TabTransitionTime = 0.22,
+    TabSwipeOffset = 26,
+    TabSwipeFrom = "bottom"
+})
+
+-- ════════════════════════════════════════════
+-- ═══ BLOCK 1: TARGET SYSTEM STATE + HELPERS
+-- ════════════════════════════════════════════
+
+local TargetState = {
+    SelectedPlayers       = {},
+    TargetMethods         = {},
+    KickServerCooldowns   = setmetatable({}, { __mode = "k" }),
+    KickLogs              = {},
+    KickServerState       = { Running = false },
+    PlayerDropdowns       = {},
+    States                = {},
+    SelectedPlayersBlob   = {},
+    SelectedPlayersAC     = {},
+    SelectedPlayersExp    = {},
+    SelectedPlayersEffect = {},
+}
+
+local TargetConfig = {
+    NKOffset         = 15,
+    NKDelayMode      = "Normal",
+    KickServerMethod = "Circle + Lag",
+    BlobMethod       = "Kick",
+    BKMethod         = 1,
+    TargetedLimbCA   = "All",
+    CounterMethod    = "Kill",
+    ExplosionMethod  = "BombMissile",
+    MissilesToFire   = 1,
+}
+
+local TargetFlags = {
+    LoopApplyMethodT       = false,
+    LoopApplyMethodTServer = false,
+    AutoReset              = true,
+    AntiExplode            = false,
+    CounterAttack          = false,
+    RagdollInNK            = true,
+    DeleteShurInNK         = true,
+    EKI                    = false,
+    DirectGrab             = false,
+    PositionPrediction     = false,
+}
+
+-- ============================================
+-- HELPER FUNCTIONS
+-- ============================================
+local Players_S   = game:GetService("Players")
+local RunService_S = game:GetService("RunService")
+local LP = Players_S.LocalPlayer
+
+local function GetChar(player)
+    player = player or LP
+    local char = player.Character
+    if not char then return end
+    local root = char:FindFirstChild("HumanoidRootPart") or char:FindFirstChild("realHrp")
+    local hum = char:FindFirstChildOfClass("Humanoid")
+    return char, root, hum
+end
+
+local function FormatPlayer(player, newline, shortSelf)
+    if type(player) == "string" then
+        player = Players_S:FindFirstChild(player)
+    end
+    if not player then return "???" end
+    if player == LP and shortSelf then return "You" end
+    local sep = newline and "\n" or ""
+    return ("<b>%s</b> (%s@%s)"):format(player.DisplayName, sep, player.Name)
+end
+
+local function IsProtectedPlayer(player)
+    -- ผูกกับระบบ whitelist ของคุณได้
+    return false
+end
+
+local function GetTargets(serverWide, selectedTable)
+    local list = {}
+    if serverWide then
+        for _, p in ipairs(Players_S:GetPlayers()) do
+            if p ~= LP and not IsProtectedPlayer(p) then
+                table.insert(list, p)
+            end
+        end
+    else
+        for p in pairs(selectedTable or TargetState.SelectedPlayers) do
+            if p and p.Parent and not IsProtectedPlayer(p) then
+                table.insert(list, p)
+            end
+        end
+    end
+    return list
+end
+
+local function WarnNotify(text, title)
+    if Library and Library.Notify then
+        Library:Notify({
+            Title = title or "Resonance",
+            Description = tostring(text),
+            Time = 5,
+        })
+    else
+        warn("[Target] " .. tostring(text))
+    end
+end
+
+-- ============================================
+-- ACTION STUBS — แทนที่ด้วย remote ของเกมคุณ
+-- ============================================
+local Actions = {}
+
+function Actions.Kill(player)
+    local _, _, hum = GetChar(player)
+    if hum and hum.Health > 0 then
+        hum.BreakJointsOnDeath = false
+        hum:ChangeState(Enum.HumanoidStateType.Dead)
+    end
+end
+
+function Actions.Void(player)
+    local _, root = GetChar(player)
+    if root then
+        root.CFrame = CFrame.new(0, 9e9, 0)
+        root.Velocity = Vector3.new(0, 9e9, 0)
+    end
+end
+
+function Actions.BringPlayer(player)
+    local _, myRoot = GetChar()
+    local _, theirRoot = GetChar(player)
+    if myRoot and theirRoot then
+        theirRoot.CFrame = myRoot.CFrame * CFrame.new(0, 0, -5)
+    end
+end
+
+function Actions.RemoveGucci(player)
+    WarnNotify("RemoveGucci ยังไม่ได้ผูกกับเกม")
+end
+
+function Actions.EatAntiInput(player) end
+function Actions.DeleteSeatables(player) end
+
+function Actions.BreakLimb(player, limb)
+    local char = GetChar(player)
+    if not char then return end
+    for _, part in ipairs(char:GetChildren()) do
+        if part:IsA("BasePart") then
+            if limb == "All"
+                or (limb == "Arms" and part.Name:find("Arm"))
+                or (limb == "Legs" and part.Name:find("Leg")) then
+                part.CFrame = CFrame.new(0, -100000, 0)
+            end
+        end
+    end
+end
+
+-- ============================================
+-- PROCESS PLAYER
+-- ============================================
+local function RunAction(name, fn, player)
+    local ok, err = pcall(fn, player)
+    if not ok then
+        warn(("[Target] %s failed on %s: %s"):format(name, player.Name, tostring(err)))
+    end
+end
+
+local function ProcessPlayer(player, loopMode, serverWide)
+    if not player or not player.Parent then return end
+    local methods = TargetState.TargetMethods
+    local _, root = GetChar(player)
+
+    if methods["Remove Invisibility"] and root then
+        root.Massless = false
+    end
+
+    if methods.Bring then          RunAction("Bring", Actions.BringPlayer, player) end
+    if methods.Kill then           RunAction("Kill", Actions.Kill, player) end
+    if methods.Void then           RunAction("Void", Actions.Void, player) end
+    if methods["Remove Gucci"] then RunAction("RemoveGucci", Actions.RemoveGucci, player) end
+    if methods["Destroy Food"] then RunAction("EatAntiInput", Actions.EatAntiInput, player) end
+    if methods["Delete Seatables"] then RunAction("DeleteSeatables", Actions.DeleteSeatables, player) end
+    if methods["Delete Limbs"] then
+        RunAction("BreakLimb", function(p)
+            Actions.BreakLimb(p, TargetConfig.TargetedLimbCA)
+        end, player)
+    end
+
+    if methods.Kick then
+        if TargetConfig.KickServerMethod == "Void" and serverWide then
+            RunAction("Kick", Actions.Void, player)
+        elseif not serverWide and not loopMode then
+            RunAction("Kick", Actions.Void, player)
+        end
+    end
+end
+
+-- ============================================
+-- DROPDOWN / LOOP / APPLY BUILDERS
+-- ============================================
+local function CreatePlayerDropdown(box, idx, selectedTable, multi, addKeyPicker)
+    multi = multi ~= false
+    addKeyPicker = addKeyPicker ~= false
+
+    local dd = box:AddDropdown(idx .. "Dropdown", {
+        Text = "Targets",
+        SpecialType = "Player",
+        ExcludeLocalPlayer = true,
+        Multi = multi,
+        AllowNull = true,
+        Searchable = true,
+        FormatListValue = FormatPlayer,
+        FormatDisplayValue = FormatPlayer,
+        EnablePlayerImages = true,
+        Callback = function(values)
+            table.clear(selectedTable)
+            if multi then
+                for p in pairs(values) do
+                    if not IsProtectedPlayer(p) then
+                        selectedTable[p] = true
+                    end
+                end
+            elseif values and not IsProtectedPlayer(values) then
+                selectedTable[values] = true
+            end
+        end,
+    })
+
+    table.insert(TargetState.PlayerDropdowns, {
+        Dropdown = dd,
+        Selected = selectedTable,
+        Values = selectedTable,
+        Multi = multi,
+    })
+
+    if addKeyPicker then
+        box:AddLabel("Add To List"):AddKeyPicker(idx .. "DropdownST", {
+            Text = "Add To List",
+            Mode = "Press",
+            NoUI = true,
+            Callback = function()
+                local mouse = LP:GetMouse()
+                local t = mouse.Target
+                if not t or not t.Parent then return end
+                local plr = Players_S:FindFirstChild(t.Parent.Name)
+                if not plr or plr == LP or IsProtectedPlayer(plr) then return end
+                if not multi then
+                    dd:SetValue(plr)
+                else
+                    local tbl = {}
+                    for k, v in pairs(dd.Value) do tbl[k] = v end
+                    tbl[plr] = true
+                    dd:SetValue(tbl)
+                end
+            end,
+        })
+    end
+
+    return dd
+end
+
+local function CreateApplyButton(box, serverWide, blobMode, selectedTable)
+    local label = serverWide and "Server" or "Selected"
+    box:AddButton({
+        Text = "Apply Method " .. label,
+        Func = function()
+            task.spawn(function()
+                for _, plr in ipairs(GetTargets(serverWide, selectedTable)) do
+                    ProcessPlayer(plr, false, serverWide, blobMode)
+                end
+            end)
+        end,
+    })
+end
+
+local function CreateLoopToggle(box, idx, flagKey, serverWide, blobMode, selectedTable)
+    local label = serverWide and "Server" or "Selected"
+    box:AddToggle(idx, {
+        Text = "Loop Apply Method " .. label,
+        Default = false,
+        Tooltip = "Keeps applying selected methods to " .. label:lower() .. " players",
+        Callback = function(on)
+            TargetFlags[flagKey] = on
+            if not on then return end
+            task.spawn(function()
+                while TargetFlags[flagKey] and task.wait() do
+                    for _, plr in ipairs(GetTargets(serverWide, selectedTable)) do
+                        if not TargetFlags[flagKey] then return end
+                        ProcessPlayer(plr, true, serverWide, blobMode)
+                    end
+                    task.wait()
+                end
+            end)
+        end,
+    })
+end
+
+-- ============================================
+-- SYNC dropdown ตอน player leave
+-- ============================================
+Players_S.PlayerRemoving:Connect(function(player)
+    for _, entry in ipairs(TargetState.PlayerDropdowns) do
+        if entry.Selected[player] then
+            entry.Selected[player] = nil
+            if entry.Dropdown and entry.Dropdown.AddValues then
+                local list = {}
+                for _, v in ipairs(entry.Dropdown.Values or {}) do
+                    if v ~= player then table.insert(list, v) end
+                end
+                pcall(function() entry.Dropdown:SetValues(list) end)
+            end
+        end
+    end
+end)
+
+-- ════════════════════════════════════════════
+-- ═══ END BLOCK 1
+-- ════════════════════════════════════════════
+
+-- ============================================
+-- Animated Footer
+-- ============================================
+task.spawn(function()
+    local letters = {
+        'P','r','o','j','e','c','t','','P','r','e','d','a','t','o','r','X',
+    }
+    local currentLetter = 1
+    local goingReverse = false
+
+    while task.wait(0.5) do
+        local currentStr = ''
+        for i = 1, currentLetter do
+            currentStr = currentStr .. letters[i]
+        end
+
+        if goingReverse then
+            currentLetter -= 1
+        else
+            currentLetter += 1
+        end
+
+        Window:SetFooter(currentStr .. ' | Pre-Release')
+
+        if currentLetter > #letters then
+            goingReverse = true
+            currentLetter = #letters
+            task.wait(2)
+        elseif currentLetter <= 0 then
+            goingReverse = false
+            currentLetter = 1
+        end
+    end
+end)
+
+-- ============================================
+-- สร้าง Tabs
+-- ============================================
+Tabs = {
+    MainTab    = Window:AddTab("<b>Main</b>", "house", "<b>Dashboard</b>"),
+    Player     = Window:AddTab("<b>Player</b>", "person-standing", "<b>Movement and Players</b>"),
+    Defense    = Window:AddTab("<b>Defenses</b>", "shield", "<b>Protection And Stuff</b>"),
+    Target     = Window:AddTab("<b>Target Action</b>", "crosshair", "<b>Non Blobman Target Stuff</b>"),
+    Blob       = Window:AddTab("<b>Blob Action</b>", "103665213247287", "<b>Blobman Target Stuff</b>"),
+    Grab       = Window:AddTab("<b>Grabs</b>", "hand-metal", "<b>Grabs And Auras</b>"),
+    Visual     = Window:AddTab("<b>Visuals</b>", "eye-dashed", "<b>Visuals and Customize Thing</b>"),
+    ToyMain    = Window:AddTab("<b>Fun Toys</b>", "circle-pile", "<b>Toy for fun</b>"),
+    ToyTab     = Window:AddTab("<b>Toys</b>", "shapes", "<b>Toys and stuff</b>"),
+    FigureTab  = Window:AddTab("<b>Figure</b>", "mouse-pointer", "<b>Grabs And Poses</b>"),
+    Keybinds   = Window:AddTab("<b>Keybind</b>", "keyboard", "<b>Keybinds and Stuff</b>"),
+    Whitelist  = Window:AddTab("<b>Whitelist</b>", "scroll-text", "<b>Whitelist and Third-Parties</b>"),
+    ["UI Settings"] = Window:AddTab("<b>UI Settings</b>", "cog")
+}
+
+-- ════════════════════════════════════════════
+-- ═══ BLOCK 2: TARGET ACTION TAB
+-- ════════════════════════════════════════════
+
+do
+    -- ซ้ายบน: เลือกเป้าหมาย
+    local TargetBox = Tabs.Target:AddLeftGroupbox("Target", "circle-user-round")
+    CreatePlayerDropdown(TargetBox, "Target", TargetState.SelectedPlayers, true, true)
+
+    -- ซ้ายล่าง: Apply / Loop
+    local ApplyBox = Tabs.Target:AddLeftGroupbox("Apply", "dock")
+    CreateLoopToggle(ApplyBox, "LoopApplyMethodTSel",  "LoopApplyMethodT",       false, false, TargetState.SelectedPlayers)
+    CreateLoopToggle(ApplyBox, "LoopApplyMethodTServ", "LoopApplyMethodTServer", true,  false, TargetState.SelectedPlayers)
+    CreateApplyButton(ApplyBox, false, false, TargetState.SelectedPlayers)
+    CreateApplyButton(ApplyBox, true,  false, TargetState.SelectedPlayers)
+
+    -- ขวา: Method Settings
+    local MethodBox = Tabs.Target:AddRightGroupbox("Method Settings", "apple")
+
+    MethodBox:AddDropdown("MethodSettingsTargets", {
+        Text = "Methods",
+        Values = {
+            "Kick",
+            "Void",
+            "Kill",
+            "Bring",
+            "Destroy Food",
+            "Remove Gucci",
+            "Remove Invisibility",
+            "Delete Seatables",
+            "Delete Limbs",
+        },
+        Multi = true,
+        AllowNull = true,
+        Callback = function(methods)
+            TargetState.TargetMethods = methods
+        end,
+    })
+
+    -- Dependency: Kick Settings
+    local KickBox = MethodBox:AddDependencyBox()
+    KickBox:SetupDependencies({ { Options.MethodSettingsTargets, "Kick" } })
+    KickBox:AddDivider("Kick Settings")
+
+    KickBox:AddDropdown("NKDelayConf", {
+        Text = "Delay Mode",
+        Values = { "Normal", "Faster but worse" },
+        Default = 1,
+        Multi = false,
+        Callback = function(v) TargetConfig.NKDelayMode = v end,
+    })
+
+    KickBox:AddToggle("RagdollNK", {
+        Text = "Loop Ragdoll",
+        Default = true,
+        Callback = function(v) TargetFlags.RagdollInNK = v end,
+    })
+
+    KickBox:AddToggle("AntiKickRemoverNK", {
+        Text = "Remove Anti-Kick",
+        Default = true,
+        Callback = function(v) TargetFlags.DeleteShurInNK = v end,
+    })
+
+    KickBox:AddToggle("EKIToggle", {
+        Text = "Experimental Kick Improvements [BETA]",
+        Default = false,
+        Risky = true,
+        Disabled = typeof(sethiddenproperty) ~= "function",
+        DisabledTooltip = "Your executor does not support this feature!",
+        Callback = function(v) TargetFlags.EKI = v end,
+    })
+
+    KickBox:AddSlider("HeightNK", {
+        Text = "Kick Height",
+        Default = 15,
+        Min = 0,
+        Max = 28,
+        Rounding = 0,
+        Compact = true,
+        Callback = function(v) TargetConfig.NKOffset = v end,
+    })
+
+    KickBox:AddButton({
+        Text = "TP To Void Platform",
+        Tooltip = "Teleports you to a platform where victim can't spawn anti-kick shurikens.",
+        Func = function()
+            local _, root = GetChar()
+            if root then
+                root.CFrame = CFrame.new(0, 100000, 0)
+            end
+        end,
+    })
+
+    KickBox:AddDivider("Kick Server Settings")
+
+    KickBox:AddDropdown("KickServerMethod", {
+        Text = "Kick Server Method",
+        Values = { "Circle + Lag", "Void" },
+        Default = 1,
+        Multi = false,
+        Callback = function(v) TargetConfig.KickServerMethod = v end,
+    })
+
+    -- Dependency: Delete Limbs
+    local LimbBox = MethodBox:AddDependencyBox()
+    LimbBox:SetupDependencies({ { Options.MethodSettingsTargets, "Delete Limbs" } })
+    LimbBox:AddDivider("Delete Limb Settings")
+
+    LimbBox:AddDropdown("TargetLimbCA", {
+        Text = "Limbs to delete",
+        Values = { "Legs", "Arms", "All" },
+        Default = 3,
+        Multi = false,
+        Searchable = true,
+        Callback = function(v) TargetConfig.TargetedLimbCA = v end,
+    })
+
+    -- ขวาล่าง: Counter-attack
+    local CounterBox = Tabs.Target:AddRightGroupbox("Counter-attack", "airplay")
+
+    CounterBox:AddDropdown("CADropdown", {
+        Text = "Consequences",
+        Values = { "Grab", "Kill", "Void", "Delete Limbs", "Fling", "Teleport to Spawn", "Anchor" },
+        Default = "Kill",
+        Multi = false,
+        Tooltip = "What will you do when someone touches you",
+        Callback = function(v) TargetConfig.CounterMethod = v end,
+    })
+
+    CounterBox:AddToggle("CAToggle", {
+        Text = "Counter Attack",
+        Default = false,
+        Callback = function(v) TargetFlags.CounterAttack = v end,
+    })
+end
+
+-- ════════════════════════════════════════════
+-- ═══ END BLOCK 2
+-- ════════════════════════════════════════════
+
+-- ============================================
+-- Color Palette Helper
+-- ============================================
+local C = {
+    Text   = 'rgb(232, 230, 242)',
+    Sub    = 'rgb(155, 153, 172)',
+    Muted  = 'rgb(90, 88, 105)',
+    Faint  = 'rgb(52, 50, 66)',
+    Green  = 'rgb(110, 210, 130)',
+    Amber  = 'rgb(220, 175, 80)',
+    Red    = 'rgb(215, 75, 75)',
+    Blue   = 'rgb(110, 165, 240)',
+}
+
+function Col(text, colour)
+    return ("<font color='%s'>%s</font>"):format(colour, text)
+end
+
+function Bold(text)
+    return '<b>' .. text .. '</b>'
+end
+
+function Sep()
+    return Col('\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}', C.Faint)
+end
+
+function Row(key, val, valCol)
+    return Bold(key) .. Col('   ', C.Faint) .. Col(val, valCol or C.Sub)
+end
+
+-- ============================================
+-- Helper Functions
+-- ============================================
+function Typewrite(label, finalText, speed)
+    speed = speed or 0.04
+    task.spawn(function()
+        local plain = finalText:gsub('<[^>]+>', '')
+        for i = 1, #plain do
+            label:SetText(plain:sub(1, i))
+            task.wait(speed)
+        end
+        label:SetText(finalText)
+    end)
+end
+
+function Cascade(fns, gap)
+    gap = gap or 0.1
+    task.spawn(function()
+        for _, f in ipairs(fns) do
+            f()
+            task.wait(gap)
+        end
+    end)
+end
+
+function FormatUptime(s)
+    local h = s // 3600
+    local m = (s % 3600) // 60
+    local sc = s % 60
+    if h > 0 then
+        return ('%dh %02dm'):format(h, m)
+    elseif m > 0 then
+        return ('%dm %02ds'):format(m, sc)
+    else
+        return sc .. 's'
+    end
+end
+
+-- ============================================
+-- Profile Box Example
+-- ============================================
+ProfileBox   = Tabs.MainTab:AddLeftGroupbox('<b>Profile</b>', 'user')
+SessionBox   = Tabs.MainTab:AddRightGroupbox('<b>Activity</b>', 'activity')
+Scriptblox   = Tabs.MainTab:AddRightTabbox('<b>Script</b>', 'zap')
+
+QuickBox      = Scriptblox:AddTab("<b>Scripts</b>", "zap")
+WatermarkGroup = Scriptblox:AddTab("<b>Watermarks</b>", "waves-horizontal")
+
+-- ============================================
+-- UI Settings - Menu Keybind
+-- ============================================
+CursorTab = Tabs['UI Settings']:AddLeftGroupbox("<b>Display</b>", "mouse-pointer")
+CursorTab:AddLabel('Menu Keybind'):AddKeyPicker('MenuKeybind', {
+    Default = 'RightShift',
+    NoUI = true,
+})
+
+-- ============================================
+-- Theme & Save
+-- ============================================
+Library.ToggleKeybind = Options.MenuKeybind
+ThemeManager:SetLibrary(Library)
+SaveManager:SetLibrary(Library)
+SaveManager:IgnoreThemeSettings()
+SaveManager:SetIgnoreIndexes({ "MenuKeybind" })
+ThemeManager:SetFolder("PredatorX Ftap")
+SaveManager:SetFolder("PredatorX/Configs")
+SaveManager:BuildConfigSection(Tabs["UI Settings"])
+ThemeManager:ApplyToTab(Tabs["UI Settings"])
+
+Window:SetCornerRadius(20)
+Library.ShowCustomCursor = false
+
+print("Oasis UI Loaded")
+Library:Notify({
+    Title = "<b>Oasis</b>",
+    Description = "Load Successfully",
+    Icon = "rbxassetid://92219509537334",
+    Duration = 5
+})
